@@ -1,0 +1,35 @@
+# ── Python ─────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.ipynb_checkpoints/
+
+# ── Sanal ortam ────────────────────────────────────────────────
+venv/
+.venv/
+env/
+
+# ── Çıktılar (yeniden üretilebilir; repoya konmaz) ─────────────
+results/
+*.log
+*.pth            # model ağırlıkları (büyük)
+*.ckpt
+
+# ── Veri (büyük / lisanslı; repoya konmaz) ────────────────────
+data/
+*.xlsx
+*.xls
+*.csv
+*.sav
+*.spv
+
+# ── Şekiller (isteğe bağlı; yayına giren figürleri tutmak isterseniz
+#    aşağıdaki satırı yorumlayın) ─────────────────────────────────
+# figures/*.png
+
+# ── İşletim sistemi / editör ──────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
