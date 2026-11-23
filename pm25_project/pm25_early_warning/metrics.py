@@ -125,20 +125,26 @@ def roc_auc(prob, event):
     """ROC-AUC (Mann–Whitney U ile; sklearn'e gerek yok)."""
     return _auc_rank(prob, event)
 
-def pr_auc(prob, event, n_thr: int = 200):
-    """PR-AUC (nadir olaylar için tercih edilir) — trapez ile."""
-    thrs = np.linspace(0, 1, n_thr)
-    prec, rec = [], []
-    ev = event.astype(bool)
-    for t in thrs:
-        pred = prob >= t
-        tp = np.sum(pred & ev); fp = np.sum(pred & ~ev); fn = np.sum(~pred & ev)
-        p = tp / (tp + fp) if (tp + fp) > 0 else 1.0
-        r = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-        prec.append(p); rec.append(r)
-    rec, prec = np.array(rec), np.array(prec)
-    o = np.argsort(rec)
-    return float(_trapz(prec[o], rec[o]))
+def pr_auc(prob, event):
+    """
+    PR-AUC, average precision (AP) olarak: AP = Σ (R_k − R_{k−1}) · P_k
+    (sklearn.metrics.average_precision_score ile aynı tanım). Eğri recall=0'dan başlar;
+    bağlı (eşit) olasılıklar tek eşik sayılır → 0/1 olasılıklı naive tabanlar için de doğru.
+    Rastgele tahmincinin beklenen değeri ≈ taban oran (base_rate).
+    """
+    prob = np.asarray(prob, dtype=float)
+    ev = np.asarray(event).astype(bool)
+    n_pos = int(ev.sum())
+    if n_pos == 0:
+        return float("nan")
+    order = np.argsort(-prob, kind="mergesort")
+    p_s, e_s = prob[order], ev[order]
+    last = np.r_[np.where(np.diff(p_s) != 0)[0], len(p_s) - 1]   # her farklı eşiğin son indeksi
+    tps = np.cumsum(e_s)[last]
+    fps = (last + 1) - tps
+    precision = tps / (tps + fps)
+    recall = tps / n_pos
+    return float(np.sum(np.diff(np.r_[0.0, recall]) * precision))
 
 def lead_time(prob_series: np.ndarray, event_series: np.ndarray,
               thr: float = 0.5, max_lag: int = 72) -> Dict[str, float]:

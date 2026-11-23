@@ -10,15 +10,15 @@ venv/
 .venv/
 env/
 
-# ── Çıktılar (yeniden üretilebilir; repoya konmaz) ─────────────
-results/
-*.log
-*.pth            # model ağırlıkları (büyük)
-*.ckpt
+# # ── Çıktılar (yeniden üretilebilir; repoya konmaz) ─────────────
+# #results/
+# *.log
+# *.pth            # model ağırlıkları (büyük)
+# *.ckpt
 
-# ── Veri (büyük / lisanslı; repoya konmaz) ────────────────────
-data/
-*.xlsx
+# # ── Veri (büyük / lisanslı; repoya konmaz) ────────────────────
+# data/
+# *.xlsx
 *.xls
 *.csv
 *.sav
